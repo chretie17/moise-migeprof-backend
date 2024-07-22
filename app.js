@@ -19,7 +19,7 @@ app.use('/api/families', familyRoutes);
 app.use('/api/programs', programRoutes);
 app.use('/api/attendances', attendanceRoutes);
 app.use('/api/contents', contentRoutes);
-app.use('/api/feedbacks', feedbackRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 sequelize.sync()
   .then(() => {

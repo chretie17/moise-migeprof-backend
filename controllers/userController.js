@@ -27,13 +27,27 @@ exports.loginUser = async (req, res) => {
 };
 // Function to handle password reset
 exports.resetPassword = async (req, res) => {
-  const { UserID, newPassword } = req.body;
+  const { UserID, oldPassword, newPassword } = req.body;
   try {
+    const user = await User.findByPk(UserID);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Verify old password
+    const isMatch = await bcrypt.compare(oldPassword, user.Password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Old password is incorrect' });
+    }
+
+    // Hash new password and update
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await User.update({ Password: hashedPassword, MustResetPassword: false }, { where: { UserID } });
+
     res.json({ message: 'Password reset successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error resetting password', error });
+    console.error('Error resetting password:', error); // Log the error for debugging
+    res.status(500).json({ message: 'Error resetting password', error: error.message });
   }
 };
 
@@ -114,5 +128,20 @@ exports.toggleUserActivation = async (req, res) => {
   } catch (error) {
     console.error('Error toggling user activation', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+};
+exports.getUserProfile = async (req, res) => {
+  res.json(req.user);
+};
+exports.getUserById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user', error });
   }
 };

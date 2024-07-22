@@ -3,20 +3,36 @@ module.exports = (sequelize, DataTypes) => {
     FamilyID: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     Address: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     RegistrationDate: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
+      defaultValue: DataTypes.NOW,
     },
     Status: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
+      allowNull: false,
+    },
+    FamilyHeadName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    NumberOfMembers: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    IncomeLevel: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    EducationLevel: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   });
 
   Family.associate = function(models) {

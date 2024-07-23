@@ -7,6 +7,8 @@ const programRoutes = require('./routes/program');
 const attendanceRoutes = require('./routes/attendance');
 const contentRoutes = require('./routes/content');
 const feedbackRoutes = require('./routes/feedback');
+const DashboardRoutes = require('./routes/dashboardRoutes');
+const ReportRoutes = require('./routes/report');
 
 const app = express();
 
@@ -20,6 +22,9 @@ app.use('/api/programs', programRoutes);
 app.use('/api/attendances', attendanceRoutes);
 app.use('/api/contents', contentRoutes);
 app.use('/api/feedback', feedbackRoutes);
+app.use('/api/dashboard', DashboardRoutes);
+app.use('/api/reports', ReportRoutes);
+
 
 sequelize.sync()
   .then(() => {

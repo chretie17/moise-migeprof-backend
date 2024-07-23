@@ -26,10 +26,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true
     },
-    MustResetPassword: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true
-    }
   });
 
   User.associate = function(models) {

@@ -73,7 +73,6 @@ exports.createFieldAgent = async (req, res) => {
       Email: email,
       Password: hashedPassword,
       Role: role,
-      MustResetPassword: true // Field agent must reset password on first login
     });
     res.json({ message: 'Field agent created successfully', user });
   } catch (error) {

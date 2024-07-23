@@ -125,3 +125,14 @@ exports.getPrograms = async (req, res) => {
     res.status(500).json({ error: 'Error fetching programs' });
   }
 };
+exports.getFamiliesByProgram = async (req, res) => {
+  try {
+    const { programId } = req.params;
+    const families = await Family.findAll({
+      include: [{ model: Program, where: { ProgramID: programId } }]
+    });
+    res.status(200).json(families);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching families', error });
+  }
+};

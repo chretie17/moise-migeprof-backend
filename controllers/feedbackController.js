@@ -1,5 +1,7 @@
+const moment = require('moment-timezone');
 const { Feedback, Program, Family, Attendance } = require('../models');
 const { validationResult } = require('express-validator');
+const { Op } = require('sequelize');
 
 exports.createOrUpdateFeedback = async (req, res) => {
   try {
@@ -21,12 +23,19 @@ exports.createOrUpdateFeedback = async (req, res) => {
 
 exports.getAllFeedback = async (req, res) => {
   try {
-    const feedbacks = await Feedback.findAll();
+    const feedbacks = await Feedback.findAll({
+      include: {
+        model: Program,
+        attributes: ['ProgramName'] // Only fetch the ProgramName attribute
+      }
+    });
     res.status(200).json(feedbacks);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching feedbacks', error });
   }
 };
+
+
 exports.submitFeedback = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -70,5 +79,28 @@ exports.submitFeedback = async (req, res) => {
   } catch (error) {
     console.error('Error submitting feedback:', error);
     res.status(500).json({ message: 'Error submitting feedback', error });
+  }
+};
+
+exports.getProgramAttendanceForToday = async (req, res) => {
+  const { programId } = req.params;
+
+  try {
+    const startOfDay = moment().tz('Africa/Kigali').startOf('day').toDate();
+    const endOfDay = moment().tz('Africa/Kigali').endOf('day').toDate();
+
+    const attendanceCount = await Attendance.count({
+      where: {
+        ProgramID: programId,
+        createdAt: {
+          [Op.between]: [startOfDay, endOfDay]
+        }
+      }
+    });
+
+    res.status(200).json({ count: attendanceCount });
+  } catch (error) {
+    console.error('Error fetching today\'s attendance:', error);
+    res.status(500).json({ message: 'Error fetching today\'s attendance', error });
   }
 };

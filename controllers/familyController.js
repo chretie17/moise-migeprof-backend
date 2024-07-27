@@ -9,7 +9,12 @@ exports.registerFamily = async (req, res) => {
   }
 
   try {
-    const { Address, Status, FamilyHeadName, NumberOfMembers, IncomeLevel, EducationLevel, ProgramID } = req.body;
+    const {
+      Address, Status, FamilyHeadName, NumberOfMembers,
+      IncomeLevel, EducationLevel, ProgramID,
+      Province, District, Sector, Cell, Village
+    } = req.body;
+    
     const family = await Family.create({
       Address,
       Status,
@@ -17,6 +22,11 @@ exports.registerFamily = async (req, res) => {
       NumberOfMembers,
       IncomeLevel,
       EducationLevel,
+      Province,
+      District,
+      Sector,
+      Cell,
+      Village,
     });
 
     if (ProgramID) {
@@ -43,7 +53,11 @@ exports.updateFamily = async (req, res) => {
 
   try {
     const { id } = req.params;
-    const { Address, Status, FamilyHeadName, NumberOfMembers, IncomeLevel, EducationLevel } = req.body;
+    const {
+      Address, Status, FamilyHeadName, NumberOfMembers,
+      IncomeLevel, EducationLevel,
+      Province, District, Sector, Cell, Village
+    } = req.body;
 
     const family = await Family.findByPk(id);
     if (!family) {
@@ -57,6 +71,11 @@ exports.updateFamily = async (req, res) => {
       NumberOfMembers,
       IncomeLevel,
       EducationLevel,
+      Province,
+      District,
+      Sector,
+      Cell,
+      Village,
     });
 
     res.status(200).json(family);
@@ -65,7 +84,6 @@ exports.updateFamily = async (req, res) => {
     res.status(500).json({ message: 'Error updating family', error });
   }
 };
-
 exports.deleteFamily = async (req, res) => {
   try {
     const { id } = req.params;
@@ -105,6 +123,35 @@ exports.addAttendance = async (req, res) => {
 };
 
 exports.getFamilies = async (req, res) => {
+  try {
+    const families = await Family.findAll({
+      include: [{ model: Program, through: { attributes: [] }, attributes: ['ProgramName'] }]
+    });
+
+    const familyData = families.map(family => ({
+      FamilyID: family.FamilyID,
+      FamilyHeadName: family.FamilyHeadName,
+      Address: family.Address,
+      Status: family.Status,
+      NumberOfMembers: family.NumberOfMembers,
+      IncomeLevel: family.IncomeLevel,
+      EducationLevel: family.EducationLevel,
+      Province: family.Province,
+      District: family.District,
+      Sector: family.Sector,
+      Cell: family.Cell,
+      Village: family.Village,
+      Programs: family.Programs.map(program => program.ProgramName).join(', ')
+    }));
+
+    res.status(200).json(familyData);
+  } catch (error) {
+    console.error('Error fetching families:', error);
+    res.status(500).json({ error: 'Error fetching families' });
+  }
+};
+
+exports.getallFamilies = async (req, res) => {
   try {
     const families = await Family.findAll({
       include: [{ model: Program }]

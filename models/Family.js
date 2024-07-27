@@ -33,6 +33,26 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    Province: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    District: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    Sector: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    Cell: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    Village: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   });
 
   Family.associate = function(models) {
